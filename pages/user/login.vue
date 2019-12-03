@@ -17,7 +17,7 @@
         <LoginForm v-if="currentTab == 0"/>
 
         <!-- 注册功能组件 -->
-        <!-- <RegisterForm v-if="currentTab == 1"/> -->
+        <RegisterForm v-if="currentTab == 1" @changetab='currentTab=0'/>
       </div>
     </el-row>
   </div>
@@ -25,6 +25,7 @@
 
 <script>
 import LoginForm from '@/components/user/loginForm.vue'
+import RegisterForm from '@/components/user/register.vue'
 export default {
   methods: {
     handlehandleChangeTab(index){
@@ -37,7 +38,7 @@ export default {
     }
   },
   components: {
-    LoginForm
+    LoginForm,RegisterForm
   }
 }
 </script>
