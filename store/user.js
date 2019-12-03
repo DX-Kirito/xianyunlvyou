@@ -9,6 +9,10 @@ export const mutations={
     //保存用户信息到state
     setUserInfo(state,data){
         state.userInfo=data
+    },
+    clearUserInfo(state){
+        localStorage.removeItem('store'),
+        state.userInfo={}
     }
 }
 
