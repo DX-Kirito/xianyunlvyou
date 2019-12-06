@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div />
+        <FlightsFilters :flights="cacheFlightsData" @setFlightsData="setFlightsData" />
 
         <!-- 航班头部布局 -->
         <FlightsListHead />
@@ -40,15 +40,24 @@
 <script>
 import FlightsListHead from '@/components/air/flightsListHead.vue'
 import FlightsItem from '@/components/air/flightsItem.vue'
+import FlightsFilters from '@/components/air/flightsFilters.vue'
 export default {
   components: {
     FlightsItem,
-    FlightsListHead
+    FlightsListHead,
+    FlightsFilters
   },
   data () {
     return {
+       cacheFlightsData: {
+        flights: [],
+        options: {},
+        info: {}
+      },
       flightsData: {
-        flights: []
+        flights: [],
+        options: {},
+        info: {}
       },
       // dataList: [],
       pageSize: 10,
@@ -58,8 +67,8 @@ export default {
   },
   computed: {
     dataList () {
-      const start = (this.pageIndex - 1) * this.pageSize
-      const end = start + this.pageSize
+      var start = (this.pageIndex - 1) * this.pageSize
+      var end = start + this.pageSize
       return this.flightsData.flights.slice(start, end)
     }
   },
@@ -68,10 +77,10 @@ export default {
       url: 'airs',
       params: this.$route.query
     }).then((res) => {
-      // console.log(res)
       this.flightsData = res.data
       // console.log(this.flightsData)
-      // this.dataList = this.flightsData.flights
+      this.cacheFlightsData = { ...res.data }
+      console.log(this.ckcheFlightsData);
       this.isLoad = false
     })
   },
@@ -81,6 +90,9 @@ export default {
     },
     changePageSize (value) {
       this.pageSize = value
+    },
+    setFlightsData (newflights) {
+      this.flightsData.flights = newflights
     }
   }
 }
