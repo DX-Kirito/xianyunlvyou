@@ -13,6 +13,19 @@
         <div>
           <!-- 航班列表 -->
           <FlightsItem v-for="(item,index) in dataList" :key="index" :flights="item" />
+          <el-pagination
+            :total="this.flightsData.total"
+            :page-sizes="[10,20,25,30]"
+            :page-size="pageSize"
+            :current-page="pageIndex"
+            @current-change="handleCurrentChange"
+            @size-change="changePageSize"
+            v-if="this.flightsData.total>0"
+            layout="sizes,prev, pager, next"
+          />
+          <div v-else-if="!isLoad">
+            暂时无数据
+          </div>
         </div>
       </div>
 
@@ -29,14 +42,25 @@ import FlightsListHead from '@/components/air/flightsListHead.vue'
 import FlightsItem from '@/components/air/flightsItem.vue'
 export default {
   components: {
-    FlightsItem, FlightsListHead
+    FlightsItem,
+    FlightsListHead
   },
   data () {
     return {
       flightsData: {
         flights: []
       },
-      dataList: []
+      // dataList: [],
+      pageSize: 10,
+      pageIndex: 1,
+      isLoad: true
+    }
+  },
+  computed: {
+    dataList () {
+      const start = (this.pageIndex - 1) * this.pageSize
+      const end = start + this.pageSize
+      return this.flightsData.flights.slice(start, end)
     }
   },
   mounted () {
@@ -46,9 +70,18 @@ export default {
     }).then((res) => {
       // console.log(res)
       this.flightsData = res.data
-      console.log(this.flightsData)
-      this.dataList = this.flightsData.flights
+      // console.log(this.flightsData)
+      // this.dataList = this.flightsData.flights
+      this.isLoad = false
     })
+  },
+  methods: {
+    handleCurrentChange (value) {
+      this.pageIndex = value
+    },
+    changePageSize (value) {
+      this.pageSize = value
+    }
   }
 }
 </script>
