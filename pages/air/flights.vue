@@ -32,6 +32,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FilghtsAside />
       </div>
     </el-row>
   </section>
@@ -41,11 +42,13 @@
 import FlightsListHead from '@/components/air/flightsListHead.vue'
 import FlightsItem from '@/components/air/flightsItem.vue'
 import FlightsFilters from '@/components/air/flightsFilters.vue'
+import FilghtsAside from '@/components/air/flightsAside.vue'
 export default {
   components: {
     FlightsItem,
     FlightsListHead,
-    FlightsFilters
+    FlightsFilters,
+    FilghtsAside
   },
   data () {
     return {
@@ -65,6 +68,11 @@ export default {
       isLoad: true
     }
   },
+  watch:{
+    $route(){
+      this.loadPageData()
+    }
+  },
   computed: {
     dataList () {
       var start = (this.pageIndex - 1) * this.pageSize
@@ -73,16 +81,7 @@ export default {
     }
   },
   mounted () {
-    this.$axios({
-      url: 'airs',
-      params: this.$route.query
-    }).then((res) => {
-      this.flightsData = res.data
-      // console.log(this.flightsData)
-      this.cacheFlightsData = { ...res.data }
-      console.log(this.ckcheFlightsData);
-      this.isLoad = false
-    })
+   this.loadPageData()
   },
   methods: {
     handleCurrentChange (value) {
@@ -93,6 +92,18 @@ export default {
     },
     setFlightsData (newflights) {
       this.flightsData.flights = newflights
+    },
+    loadPageData(){
+       this.$axios({
+      url: 'airs',
+      params: this.$route.query
+    }).then((res) => {
+      this.flightsData = res.data
+      // console.log(this.flightsData)
+      this.cacheFlightsData = { ...res.data }
+      console.log(this.ckcheFlightsData);
+      this.isLoad = false
+    })
     }
   }
 }

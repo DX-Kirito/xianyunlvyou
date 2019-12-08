@@ -126,6 +126,7 @@ export default {
       });
     },
     searchTicket() {
+      this.$store.commit("history/addHistoryItem", this.form)
       console.log(this.form);
       this.$router.push({
         path:'/air/flights',

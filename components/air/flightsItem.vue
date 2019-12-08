@@ -42,7 +42,7 @@
               ￥{{ item.settle_price_coupon }}
             </el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">
+              <el-button type="warning" size="mini" @click="toOrderPage(item.seat_xid)">
                 选定
               </el-button>
               <p>剩余：88</p>
@@ -60,6 +60,17 @@ export default {
   data () {
     return {
       isShow: false
+    }
+  },
+  methods:{
+    toOrderPage(seatId){
+      this.$router.push({
+        path:'/air/order',
+        query:{
+          id:this.flights.id,
+          seat_xid:seatId
+        }
+      })
     }
   },
   computed: {
