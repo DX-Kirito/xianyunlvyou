@@ -43,12 +43,14 @@
     <div class="air-column">
       <h2>联系人</h2>
       <div class="contact">
-        <el-form label-width="60px">
-          <el-form-item label="姓名">
+        <el-form label-width="80px"
+        :model="{contactName,contactPhone,captcha}"
+        :rules="contactRules">
+          <el-form-item label="姓名" prop="contactName">
             <el-input v-model="contactName"></el-input>
           </el-form-item>
 
-          <el-form-item label="手机">
+          <el-form-item label="手机" prop="contactPhone">
             <el-input placeholder="请输入内容" v-model="contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
@@ -56,7 +58,7 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="验证码">
+          <el-form-item label="验证码" prop="contactcaptcha">
             <el-input v-model="captcha"></el-input>
           </el-form-item>
         </el-form>
@@ -72,6 +74,7 @@ export default {
     props:['data'],
     data(){
         return{
+            isSending:false,
             users:[{
                 username:'',
                 id:''
@@ -79,7 +82,24 @@ export default {
             insurances:[],
             contactName:'',
             contactPhone:'',
-            captcha:''
+            captcha:'',
+            contactRules:{
+              contactName:{
+                required:true,
+                message:'请输入联系人姓名',
+                trigger:'blur'
+              },
+              contactPhone:{
+                required:true,
+                message:'请输入手机号',
+                trigger:'blur'
+              },
+              contactcaptcha:{
+                required:true,
+                message:'请输入验证码',
+                trigger:'blur'
+              }
+            }
         }
     },
   computed:{
@@ -137,14 +157,17 @@ export default {
     handleSubmit() {
         // console.log(this.users);
         // const users = [...this.users]
-        
+        if(this.isSending){
+          return
+        }
+        this.isSending=true
        const orderData={
            users:this.users,
            insurances:this.insurances,
            contactName:this.contactName,
            contactPhone:this.contactPhone,
            invoice:false,
-           seat_xid:this.data.seat_xid,
+           seat_xid:this.data.seat_infos.seat_xid,
            air:this.data.id,
            captcha:this.captcha
        }
@@ -169,7 +192,15 @@ export default {
             Authorization: "Bearer " + token
         }
        }).then(res=>{
-           console.log(res);
+         this.isSending=false
+           const {data}=res.data
+           console.log(data);
+           this.$router.push({
+             path:'/air/pay',
+              query:{
+                id:data.id
+              }
+           })
        })
     }
   }
